@@ -1,0 +1,497 @@
+%% =====================================================================
+%%  BEAMER STARTER TEMPLATE  (for beginners)
+%% =====================================================================
+%%  HOW TO USE
+%%   1. Put this file in a folder. Put your logo/figure images in the
+%%      SAME folder (or change the file names below).
+%%   2. Compile with pdfLaTeX (run it twice so the outline and
+%%      page numbers update). On Overleaf: just click "Recompile".
+%%   3. Only edit the parts marked  >>> EDIT <<<  to get started.
+%%   4. Lines starting with % are comments. They are ignored by LaTeX.
+%%      Remove the % in front of a line to switch that option ON.
+%%
+%%  NOTE: If a logo/image file is missing, a grey placeholder box is
+%%  shown instead, so the template always compiles.
+%% =====================================================================
+
+%% ---------------------------------------------------------------------
+%%  1. DOCUMENT CLASS
+%% ---------------------------------------------------------------------
+%%  aspectratio=169 -> widescreen (16:9, modern projectors)
+%%  aspectratio=43  -> old square-ish screens (4:3)
+%%  11pt            -> base font size (options: 8pt 9pt 10pt 11pt 12pt)
+%%  Add ",handout" to make a version with no animations (for printing).
+\documentclass[aspectratio=169, 10pt]{beamer}
+
+%% ---------------------------------------------------------------------
+%%  2. PACKAGES (tools that add features)
+%% ---------------------------------------------------------------------
+\usepackage[T1]{fontenc}     % better font encoding
+\usepackage{lmodern}         % clean, scalable fonts
+\usepackage{graphicx}        % for images
+\usepackage{booktabs}        % nice-looking tables
+\usepackage{amsmath}         % math formulas
+\usepackage{listings}        % code blocks
+% \usepackage[pdfstringdefDisableCommands]{hyperref} % handle PDF string warnings
+% \usepackage[english]{babel} % uncomment to change language
+
+%% ---------------------------------------------------------------------
+%%  2b. FIX FOR A HARMLESS HYPERREF WARNING (safe to ignore, but this
+%%      silences it). Beamer loads babel internally, and when it builds
+%%      a PDF bookmark for things like "Theorem" or "Appendix", hyperref
+%%      can't put babel's internal \translate command into that PDF
+%%      string, so it deletes it and warns:
+%%        "Token not allowed in a PDF string (Unicode): removing `\translate'"
+%%      This line tells hyperref to use the plain word instead of
+%%      silently dropping it. It does not change how your slides look.
+%% ---------------------------------------------------------------------
+\pdfstringdefDisableCommands{%
+  \def\translate#1{#1}%
+}
+
+%% ---------------------------------------------------------------------
+%%  3. COLORS  >>> EDIT <<<
+%%     Colors are given as RGB numbers from 0 to 255.
+%%     Tip: search "RGB color picker" online and copy the numbers.
+%%     This palette (navy + muted gold) is a classic, low-clash pairing:
+%%     both colors are dark enough to read as text, and neither fights
+%%     the other for attention the way navy + bright orange does.
+%% ---------------------------------------------------------------------
+\definecolor{MainColor}{RGB}{21, 42, 74}     % deep navy (titles, footer)
+\definecolor{AccentColor}{RGB}{255, 51, 51} 
+\definecolor{GoodColor}{RGB}{46, 125, 90}    % muted teal-green ("example" blocks)
+\definecolor{LightGrey}{RGB}{246, 245, 241}  % warm off-white (code background)
+
+%% Colors for the TITLE BOX on the title slide (set separately from
+%% MainColor above, so you can give the title box its own look).
+%% \colorlet copies MainColor's value here, so both stay in sync if
+%% you only edit MainColor above. To make the box a DIFFERENT color,
+%% replace the line with e.g. \definecolor{TitleBoxColor}{RGB}{...}.
+\definecolor{TitleBoxColor}{RGB}{17, 36, 80}
+\colorlet{TitleBoxTextColor}{white}
+
+%% ---------------------------------------------------------------------
+%%  4. LOOK AND FEEL (you can leave this alone at first)
+%% ---------------------------------------------------------------------
+%% Theme: try \usetheme{Madrid}, {Berlin}, {Copenhagen}, {Warsaw}...
+%% But note: other themes have their own header/footer and can
+%% conflict with the custom footer below.
+\usetheme{default}
+
+\setbeamercolor{structure}{fg=MainColor}         % bullets, links, TOC
+\setbeamercolor{title}{fg=MainColor}             % big title text
+\setbeamercolor{frametitle}{fg=white, bg=MainColor}  % slide title bar
+\setbeamercolor{alerted text}{fg=AccentColor}    % \alert{...} color
+\setbeamercolor{block title}{fg=white, bg=MainColor}
+\setbeamercolor{block body}{bg=MainColor!8}
+\setbeamercolor{block title alerted}{fg=white, bg=AccentColor}
+\setbeamercolor{block body alerted}{bg=AccentColor!10}
+\setbeamercolor{block title example}{fg=white, bg=GoodColor}
+\setbeamercolor{block body example}{bg=GoodColor!10}
+
+%% Color of the title box on the title slide (uses the colors defined
+%% in section 3 above). Change TitleBoxColor / TitleBoxTextColor there,
+%% not here.
+\setbeamercolor{titlebox}{fg=TitleBoxTextColor, bg=TitleBoxColor}
+
+\setbeamertemplate{navigation symbols}{}          % hide tiny arrows bottom-right
+\setbeamertemplate{itemize items}[circle]         % bullet style: circle, square, ball
+\setbeamertemplate{blocks}[rounded][shadow=false] % block style
+\setbeamertemplate{caption}[numbered]             % "Figure 1:" style captions
+\setbeamertemplate{bibliography item}[text]       % text labels in references
+\setbeamertemplate{section in toc}[sections numbered] % numbered outline
+
+%% Slide title bar (a full-width colored strip at the top)
+\setbeamertemplate{frametitle}{%
+  \nointerlineskip
+  \begin{beamercolorbox}[wd=\paperwidth, ht=4.2ex, dp=1.6ex, leftskip=1em]{frametitle}
+    \usebeamerfont{frametitle}\insertframetitle
+  \end{beamercolorbox}%
+}
+
+%% Code style (used by \begin{lstlisting})
+\lstset{
+  basicstyle=\ttfamily\footnotesize,
+  backgroundcolor=\color{LightGrey},
+  keywordstyle=\color{MainColor}\bfseries,
+  commentstyle=\color{gray}\itshape,
+  frame=single, rulecolor=\color{MainColor!40},
+  showstringspaces=false
+}
+
+%% ---------------------------------------------------------------------
+%%  5. HELPER MACROS FOR LOGOS AND IMAGES
+%%     \LogoBox{file}{height}{placeholder text}
+%%     \ImageBox{file}{width}{placeholder text}
+%%     If the file is missing, a placeholder box is shown.
+%%     Always write the file extension (.png, .jpg, .pdf).
+%% ---------------------------------------------------------------------
+\newcommand{\LogoBox}[3]{%
+  \IfFileExists{#1}%
+    {\includegraphics[height=#2]{#1}}%
+    {\fbox{\parbox[c][#2][c]{2.6cm}{\centering\scriptsize #3}}}%
+}
+\newcommand{\ImageBox}[3]{%
+  \IfFileExists{#1}%
+    {\includegraphics[width=#2]{#1}}%
+    {\fbox{\parbox[c][3cm][c]{#2}{\centering\small #3}}}%
+}
+
+%% ---------------------------------------------------------------------
+%%  6. TITLE SLIDE INFORMATION  >>> EDIT <<<
+%%     Text in [square brackets] is the SHORT version shown in the
+%%     footer. If the full text is short, you can remove the brackets.
+%% ---------------------------------------------------------------------
+\title[Short Title]{Your Presentation title~\texorpdfstring{\cite{template}}{[template]}}
+\subtitle{An optional subtitle (delete this line if not needed)}
+\author[Your Name]{Your Full Name}
+\institute[Your Institute]{%
+    Your Designation
+  % Your Department \\
+  % Your University or Company
+  % same for evryone 
+}
+\date{\today}   % or write a fixed date, e.g. {21 September 2026}
+
+%% Text shown right before the author name, on the SAME line
+%% (e.g. "Presented by: Your Name"). Include the colon in the text
+%% if you want one. Delete the text (leave the braces empty, {})
+%% if you don't want this label at all.
+\newcommand{\PresentedByText}{Presented by:}
+
+%% ---- LOGOS ON THE TITLE SLIDE  >>> EDIT <<<
+%%  These sit at the VERY BOTTOM of the title slide (below the date).
+%%  All three currently point to the SAME file, hbni_logo.png (so the
+%%  same logo repeats three times). Point each one at a different
+%%  file once you have more logos.
+%%  Change 1.2cm to make the logos bigger or smaller.
+%%  For only 2 logos: delete the last "\hfill \LogoBox..." part.
+\newcommand{\TitleLogos}{%
+  \makebox[0.85\textwidth][s]{%
+    \LogoBox{media/NISER@20_logo.png}{2.5cm}{Logo 1}%
+    \hfill
+    % \LogoBox{media/hbni_logo.png}{1.2cm}{Logo 2}%
+    % \hfill
+    \LogoBox{media/SMLAB_white.png}{2.5cm}{Logo 3}%
+  }%
+}
+%% ---- TITLE BOX  >>> EDIT <<<
+%%  This is the colored box the title sits inside on the title slide.
+%%  Colors come from TitleBoxColor / TitleBoxTextColor in section 3.
+%%  wd      = box width (0.85\paperwidth = 85% of the slide width)
+%%  sep     = inner padding (space between the text and the box edge)
+%%  rounded = true / false  -> rounded corners
+%%  shadow  = true / false  -> drop shadow under the box
+\newcommand{\TitleBoxWidth}{0.85\paperwidth}
+\newcommand{\TitleBoxSep}{12pt}
+\newcommand{\TitleBoxRounded}{true}
+\newcommand{\TitleBoxShadow}{true}
+
+%% ---------------------------------------------------------------------
+%%  7. FOOTER  (shown on every slide, including the title slide)
+%%     Left: author | Middle: short title | Right: page number
+%% ---------------------------------------------------------------------
+%% Optional tiny logo in the footer (keep height 2ex or less).
+%% Example: \newcommand{\FooterLogo}{\includegraphics[height=2ex]{hbni_logo.png}}
+\newcommand{\FooterLogo}{}
+
+\setbeamercolor{footer}{fg=white, bg=MainColor}
+\setbeamerfont{footer}{size=\scriptsize}
+
+\setbeamertemplate{footline}{%
+  \leavevmode
+  \hbox{%
+    \begin{beamercolorbox}[wd=.30\paperwidth, ht=2.6ex, dp=1.4ex, left, leftskip=1em]{footer}
+      \usebeamerfont{footer}\insertshortauthor
+    \end{beamercolorbox}%
+    \begin{beamercolorbox}[wd=.40\paperwidth, ht=2.6ex, dp=1.4ex, center]{footer}
+      \usebeamerfont{footer}\insertshorttitle
+    \end{beamercolorbox}%
+    \begin{beamercolorbox}[wd=.30\paperwidth, ht=2.6ex, dp=1.4ex, right, rightskip=1em]{footer}
+      \usebeamerfont{footer}\FooterLogo\ \insertframenumber\,/\,\insertpresentationendpage
+    \end{beamercolorbox}%
+  }%
+  \vskip0pt
+}
+
+%% ---------------------------------------------------------------------
+%%  8. AUTOMATIC OUTLINE AT THE START OF EACH SECTION
+%%     Shows the outline with the current section highlighted.
+%%     Delete this whole block if you do not want it.
+%% ---------------------------------------------------------------------
+\AtBeginSection[]{%
+  \begin{frame}{Outline}
+    \tableofcontents[currentsection]
+  \end{frame}
+}
+
+%% ---------------------------------------------------------------------
+%%  9. SPEAKER NOTES (optional)
+%%     Add notes with \note{...} after a slide. Then remove the % below
+%%     to show them next to the slides (useful for rehearsing).
+%% ---------------------------------------------------------------------
+% \setbeameroption{show notes on second screen=right}
+
+%% =====================================================================
+%%  START OF THE PRESENTATION
+%% =====================================================================
+\begin{document}
+
+%% ---- TITLE SLIDE ----
+%%  Built by hand (instead of \titlepage) so the title can sit inside
+%%  a colored box. Layout, top to bottom: title box, "presented by" +
+%%  author/institute/date, then logos pushed to the very bottom.
+\begin{frame}
+  \centering
+  \vspace{0.4cm}
+
+  \begin{beamercolorbox}[%
+      wd=\TitleBoxWidth, sep=\TitleBoxSep, center,
+      rounded=\TitleBoxRounded, shadow=\TitleBoxShadow]{titlebox}
+    {\usebeamerfont{title}\inserttitle\par}
+    \vspace{3pt}
+    {\usebeamerfont{subtitle}\insertsubtitle\par}
+    %% No subtitle wanted? Delete the \subtitle{...} line in section 6
+    %% above AND the two lines just before this comment.
+  \end{beamercolorbox}
+
+  \vspace{1.5em}
+  {\small\PresentedByText}\ {\usebeamerfont{author}\insertauthor}\\[3pt]
+  {\usebeamerfont{institute}\insertinstitute}\\[3pt]
+  {\usebeamerfont{date}\insertdate}
+
+  \vfill
+  \TitleLogos
+  \vspace{0.3cm}
+\end{frame}
+
+%% ---- OUTLINE ----
+\begin{frame}{Outline}
+  \tableofcontents
+\end{frame}
+
+%% =====================================================================
+\section{Text and Lists}
+%% =====================================================================
+
+\begin{frame}{Bullet Points}
+  %% \item<2-> means: "show this item from click 2 onwards".
+  \begin{itemize}
+    \item First point (visible immediately)
+    \item<2-> Second point (appears on click 2)
+    \item<3-> Third point with \alert{highlighted} text
+    \item<4-> Fourth point with \textbf{bold} and \emph{italic} text
+  \end{itemize}
+  %% Nested lists: put another itemize inside an \item.
+\end{frame}
+
+\begin{frame}{Numbered and Description Lists}
+  \begin{columns}[T] % [T] = align columns at the top
+    \begin{column}{0.48\textwidth}
+      \textbf{Numbered list}
+      \begin{enumerate}
+        \item Plan
+        \item Build
+        \item Test
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \textbf{Description list}
+      \begin{description}
+        \item[Goal] What we want to reach
+        \item[Method] How we get there
+        \item[Result] What we found
+      \end{description}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Step-by-Step Reveal with \texttt{\textbackslash pause}}
+  %% \pause stops the slide here until you click.
+  This text is shown first.
+
+  \pause
+  This text appears after one click.
+
+  \pause
+  \alert{And this appears last.}
+  %% Other tools: \only<2>{...} \uncover<2->{...} \visible<3>{...}
+\end{frame}
+
+%% =====================================================================
+\section{Boxes and Highlights}
+%% =====================================================================
+
+\begin{frame}{Blocks}
+  \begin{block}{Normal Block}
+    Use this for definitions or key ideas.
+  \end{block}
+
+  \begin{alertblock}{Warning Block}
+    Use this for important warnings or problems.
+  \end{alertblock}
+
+  \begin{exampleblock}{Example Block}
+    Use this for examples.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}{Theorem and Proof}
+  \begin{theorem}[Pythagoras]
+    In a right triangle, $a^2 + b^2 = c^2$.
+  \end{theorem}
+  %% Other ready-made boxes: definition, lemma, corollary, proof, example.
+  \begin{definition}
+    A \textbf{right triangle} has one angle of $90^\circ$.
+  \end{definition}
+\end{frame}
+
+%% =====================================================================
+\section{Figures, Tables and Math}
+%% =====================================================================
+
+\begin{frame}{Figure}
+  %% Replace figure1.png with your image file.
+  %% 0.6\textwidth = 60 percent of the slide width.
+  \begin{figure}
+    \centering
+    \ImageBox{figure1.png}{0.6\textwidth}{Your figure goes here\\(figure1.png)}
+    \caption{A short description of the figure.}
+  \end{figure}
+\end{frame}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{media/qrcode_smlab.png}
+    \caption{SMLAB-QR}
+    \label{fig:smlab_qr}
+\end{figure}
+\begin{frame}{Table}
+  %% booktabs gives clean lines: \toprule, \midrule, \bottomrule.
+  %% Column letters: l = left, c = center, r = right.
+  \begin{table}
+    \centering
+    \begin{tabular}{lcc}
+      \toprule
+      Method   & Accuracy (\%) & Time (s) \\
+      \midrule
+      Baseline & 82.1          & 12.0     \\
+      Ours     & \textbf{89.4} & 9.5      \\
+      \bottomrule
+    \end{tabular}
+    \caption{A simple comparison table.}
+  \end{table}
+\end{frame}
+
+\begin{frame}{Math}
+  Inline math goes between dollar signs: $E = mc^2$.
+
+  A numbered equation on its own line:
+  \begin{equation}
+    f(x) = \frac{1}{\sqrt{2\pi\sigma^2}}\, e^{-\frac{(x-\mu)^2}{2\sigma^2}}
+  \end{equation}
+
+  Several lines, aligned at the \& sign:
+  \begin{align*}
+    a &= b + c \\
+    d &= e - f
+  \end{align*}
+\end{frame}
+
+%% =====================================================================
+\section{Code and Two Columns}
+%% =====================================================================
+
+%% IMPORTANT: slides with code MUST have the [fragile] option.
+\begin{frame}[fragile]{Code Example}
+  \begin{lstlisting}[language=Python]
+# A simple Python example
+def greet(name):
+    return "Hello, " + name
+
+print(greet("World"))
+  \end{lstlisting}
+  %% Change language=Python to C, C++, Java, Matlab, etc.
+\end{frame}
+
+\begin{frame}{Text Next to a Figure}
+  \begin{columns}[c] % [c] = center columns vertically
+    \begin{column}{0.5\textwidth}
+      \begin{itemize}
+        \item Text on the left
+        \item Keep it short
+        \item One idea per slide
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \centering
+      \ImageBox{figure2.png}{0.9\textwidth}{Figure on the right\\(figure2.png)}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+%% =====================================================================
+\section{Conclusion}
+%% =====================================================================
+
+\begin{frame}{Summary}
+  \begin{itemize}
+    \item \textbf{Main message:} say it in one sentence~\cite{temp2}
+    \item \textbf{Key result:} one number or one picture
+    \item \textbf{Next steps:} what happens after this talk
+  \end{itemize}
+\end{frame}
+
+%% ---- REFERENCES ----
+%% allowframebreaks = long lists continue on the next slide.
+%%
+%% AUTOMATIC: if a file named ref.bib sits next to this .tex file,
+%% its entries are used automatically -- you don't need to edit
+%% anything below. Just add BibTeX entries to ref.bib and cite them
+%% in your slides with \cite{yourkey}, e.g. \cite{knuth1984}.
+%%
+%% IMPORTANT: a .bib file needs an extra compile step. Run, in order:
+%%   pdflatex yourfile
+%%   bibtex yourfile        (no .tex extension on this one)
+%%   pdflatex yourfile
+%%   pdflatex yourfile
+%% On Overleaf this happens automatically -- just click Recompile.
+%% (\nocite{*} below lists every entry in ref.bib even if you never
+%% \cite it in a slide. Remove that line to list only cited entries.)
+\begin{frame}[allowframebreaks]{References}
+  \IfFileExists{ref.bib}{%
+    \bibliographystyle{plain}
+    \bibliography{ref}
+  }
+  {%
+    %% FALLBACK: no ref.bib found (yet), so a manual example list is
+    %% shown instead. This disappears on its own once you add ref.bib.
+    \begin{thebibliography}{9}
+      \bibitem{knuth1984} D.~Knuth, \emph{The TeXbook}, Addison-Wesley, 1984.
+      \bibitem{lamport1994} L.~Lamport, \emph{LaTeX: A Document Preparation System}, 2nd ed., Addison-Wesley, 1994.
+    \end{thebibliography}
+  }%
+\end{frame}
+
+%% ---- FINAL SLIDE ----
+%% [plain] hides the footer on this slide. Remove it to keep the footer.
+\begin{frame}[plain]
+  \centering
+  \vfill
+  {\usebeamerfont{title}\usebeamercolor[fg]{title} Thank You!\par}
+  \vspace{1em}
+  Questions?
+  \vspace{1.5em}
+
+  \small
+  your.email@example.com \quad|\quad www.yourwebsite.com
+  \vfill
+\end{frame}
+
+%% ---- BACKUP SLIDES (not counted in "page x / y") ----
+\appendix
+\begin{frame}{Backup Slide}
+  Extra details that you only show if someone asks.
+\end{frame}
+
+\end{document}

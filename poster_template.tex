@@ -1,0 +1,391 @@
+%% =====================================================================
+%%  BEAMER POSTER TEMPLATE -- A0 portrait, 3 columns, academic style
+%% =====================================================================
+%%  HOW TO USE
+%%   1. Compile with  pdflatex  (run twice if you use \ref / \cite).
+%%   2. Search for  "EDIT:"      -> lines you will normally change.
+%%      Search for  "OPTIONAL:"  -> things you may delete or switch off.
+%%   3. Put hbni_logo.png, logo2.png and your figures in the SAME folder
+%%      as this file.  A missing image is replaced by a grey placeholder
+%%      box, so the file always compiles.
+%%
+%%  LAYOUT
+%%      [ logo 1 |  TITLE  /  AUTHORS  /  AFFILIATIONS  | logo 2 ]
+%%      [ column 1 |  column 2  |  column 3 ]
+%%      [ take-home bar ]
+%%      [ references | acknowledgements | QR code ]
+%%      [ contact | conference ]
+%%
+%%  IF TEXT OVERFLOWS (a quick guide)
+%%   - Title too long / wraps to 4 lines -> lower \TitleSize (header section).
+%%   - Column content too long           -> lower "scale" below (1.5 -> 1.3),
+%%                                          or move a block to another column.
+%%   - Wide table sticks out of a block  -> wrap it in \resizebox{\linewidth}{!}{...}
+%% =====================================================================
+
+%% Beamer already loads xcolor, so the 'table' option (for \rowcolor) must be
+%% passed BEFORE \documentclass. This avoids the "Option clash for xcolor" error.
+\PassOptionsToPackage{table,dvipsnames}{xcolor}
+\documentclass[final]{beamer}
+
+%% ---------------------------------------------------------------------
+%%  PAGE SIZE  (EDIT)
+%%  size = a0 | a1 | a2 | a3      orientation = portrait | landscape
+%%  scale = global text magnification (bigger = larger text).
+%% ---------------------------------------------------------------------
+\usepackage[orientation=portrait,size=a0,scale=1.5]{beamerposter}
+%  Change Scale for font size in the main body
+
+%% ---------------------------------------------------------------------
+%%  PACKAGES  (all ship with TeX Live / MiKTeX / Overleaf)
+%% ---------------------------------------------------------------------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+%% ---- FONT CHOICE (EDIT): keep exactly ONE of the two options below ----
+%% Option A (default): serif, Palatino text + matching maths
+\usepackage{mathpazo}
+%% Option B: sans-serif, Helvetica text. To use it, put % in front of the
+%% mathpazo line above, remove the % from the 3 lines below, and also
+%% change \usefonttheme{serif} further down to \usefonttheme{professionalfonts}.
+% \usepackage[scaled=0.95]{helvet}
+% \renewcommand{\familydefault}{\sfdefault}
+% \usepackage{sansmath}\sansmath   % sans-serif maths to match
+\usepackage{graphicx}
+\usepackage{booktabs}          % professional tables
+\usepackage{amsmath,amssymb}
+\usepackage{xcolor}
+\usepackage[most]{tcolorbox}   % coloured call-out boxes, header, footer
+\usepackage{qrcode}            % OPTIONAL: QR code (delete with its use in the footer)
+\usepackage{microtype}         % better spacing, fewer overfull lines
+
+%% ---------------------------------------------------------------------
+%%  COLOURS: "Oxford Navy + Burgundy"  (EDIT the RGB numbers to re-theme)
+%%  Rule of thumb: ONE dark colour, ONE accent, everything else neutral.
+%% ---------------------------------------------------------------------
+\definecolor{Primary}  {RGB}{ 11, 37, 69}   % Oxford navy    -> header, block titles
+\definecolor{Secondary}{RGB}{ 62, 92,118}   % slate blue     -> secondary blocks
+\definecolor{Accent}   {RGB}{164, 36, 59}   % burgundy       -> emphasis, warnings, rules
+\definecolor{Panel}    {RGB}{241,244,248}   % pale grey-blue -> block body / info boxes
+\definecolor{Rule}     {RGB}{201,211,223}   % light grey-blue-> thin borders
+\definecolor{TextCol}  {RGB}{ 26, 26, 26}   % near black      -> body text
+
+%% ---------------------------------------------------------------------
+%%  BEAMER LOOK  (rarely needs editing)
+%% ---------------------------------------------------------------------
+\usetheme{default}
+\usefonttheme{serif}                                     % serif text in all beamer parts
+\setbeamertemplate{navigation symbols}{}
+\setbeamercolor{background canvas}{bg=white}
+\setbeamercolor{normal text}{fg=TextCol}
+\usebeamercolor[fg]{normal text}
+
+\setbeamercolor{block title}         {fg=white,bg=Primary}
+\setbeamercolor{block body}          {fg=TextCol,bg=Panel}
+\setbeamercolor{block title alerted} {fg=white,bg=Accent}
+\setbeamercolor{block body alerted}  {fg=TextCol,bg=Panel}
+\setbeamercolor{block title example} {fg=white,bg=Secondary}
+\setbeamercolor{block body example}  {fg=TextCol,bg=Panel}
+
+\setbeamerfont{block title}{size=\large,series=\bfseries}
+\setbeamerfont{block body}{size=\normalsize}
+
+% Square-cornered block: navy title bar + pale body. Shared by all 3 block types.
+\newcommand{\PosterBlockBegin}[2]{%
+  \par
+  \begin{beamercolorbox}[wd=\linewidth,leftskip=0.7em,sep=0.8ex]{#1}%
+    \strut\usebeamerfont*{block title}\insertblocktitle
+  \end{beamercolorbox}%
+  \par\nointerlineskip
+  \usebeamerfont{block body}%
+  \begin{beamercolorbox}[wd=\linewidth,sep=0.7em,vmode]{#2}%
+    \setlength{\linewidth}{\dimexpr\linewidth-1.4em\relax}\setlength{\columnwidth}{\linewidth}\setlength{\textwidth}{\linewidth}% figures/boxes = inner width, never overflow
+    }
+\newcommand{\PosterBlockEnd}{\par\end{beamercolorbox}\vskip 8pt}
+\setbeamertemplate{block begin}          {\PosterBlockBegin{block title}{block body}}
+\setbeamertemplate{block alerted begin}  {\PosterBlockBegin{block title alerted}{block body alerted}}
+\setbeamertemplate{block example begin}  {\PosterBlockBegin{block title example}{block body example}}
+\setbeamertemplate{block end}            {\PosterBlockEnd}
+\setbeamertemplate{block alerted end}    {\PosterBlockEnd}
+\setbeamertemplate{block example end}    {\PosterBlockEnd}
+
+% Bullets and numbering
+\setbeamertemplate{itemize item}{\raisebox{0.2ex}{\tiny$\blacksquare$}}
+\setbeamertemplate{itemize subitem}{\raisebox{0.1ex}{\tiny$\blacktriangleright$}}
+\setbeamertemplate{enumerate item}{\insertenumlabel.}
+\setbeamercolor{itemize item}{fg=Accent}
+\setbeamercolor{itemize subitem}{fg=Secondary}
+\setbeamercolor{enumerate item}{fg=Accent}
+
+% TIGHT SPACING (this removes wasted white space)
+\addtobeamertemplate{itemize body begin}  {\itemsep=3pt \topsep=2pt \parsep=0pt }{}
+\addtobeamertemplate{enumerate body begin}{\itemsep=3pt \topsep=2pt \parsep=0pt }{}
+\setbeamersize{text margin left=1.5cm,text margin right=1.5cm}
+\setlength{\parskip}{4pt}
+\setlength{\parindent}{0pt}
+\setlength{\abovedisplayskip}{4pt}   \setlength{\belowdisplayskip}{4pt}
+\setlength{\abovedisplayshortskip}{2pt} \setlength{\belowdisplayshortskip}{2pt}
+
+%% ---------------------------------------------------------------------
+%%  HANDY MACROS
+%% ---------------------------------------------------------------------
+\newcommand{\kw}[1]{\textbf{\textcolor{Primary}{#1}}}     % keyword in navy bold
+\newcommand{\num}[1]{\textbf{\textcolor{Accent}{#1}}}     % key number in burgundy bold
+
+% \PosterLogo{file}{max width}{max height}: image scaled to FIT the box
+% (never overflows), or a grey placeholder when the file is missing.
+\newcommand{\PosterLogo}[3]{%
+  \IfFileExists{#1}%
+   {\includegraphics[width=#2,height=#3,keepaspectratio]{#1}}%
+   {\fcolorbox{white}{white!25!Primary}{\parbox[c][#3][c]{#2}{\centering\color{white}\bfseries LOGO\\[2pt]{\small\expandafter\detokenize\expandafter{#1}}}}}}
+
+% \fig{file}{width}: image, or placeholder (height 0.19 of page) if missing
+\newcommand{\fig}[2]{%
+  \IfFileExists{#1}{\includegraphics[width=#2]{#1}}%
+  {\fcolorbox{Rule}{white}{\parbox[c][0.19\textheight][c]{#2}{\centering\bfseries Figure placeholder\\[2pt]{\small\expandafter\detokenize\expandafter{#1}}}}}}
+
+% Call-out boxes to use inside or between blocks
+\tcbset{
+  keybox/.style ={enhanced,colback=white,colframe=Accent,boxrule=1.6pt,arc=0pt,
+                  left=6pt,right=6pt,top=4pt,bottom=4pt,before=\vspace{2pt},after=\vspace{2pt}},
+  infobox/.style={enhanced,colback=white,colframe=Rule,boxrule=1pt,arc=0pt,
+                  borderline west={5pt}{0pt}{Secondary},
+                  left=10pt,right=6pt,top=6pt,bottom=6pt,before=\vspace{2pt},after=\vspace{2pt}},
+}
+
+%% =====================================================================
+%%  POSTER INFORMATION  --  EDIT EVERYTHING IN THIS SECTION
+%% =====================================================================
+\newcommand{\PosterTitle}    {Your Poster Title Goes Here:}
+\newcommand{\PosterSubtitle} {A Concise Subtitle Describing the Contribution}   % OPTIONAL: leave {} to hide
+\newcommand{\Authors}        {First Author$^{1,2}$ \quad Second Author$^{1,2}$ \quad Third Author$^{2}$}
+\newcommand{\Affiliations}   {$^{1}$Department of X, Institute A, City, Country \quad $^{2}$Institute B, City, Country}
+\newcommand{\ContactEmail}   {first.author@institute.edu \;$\cdot$\; second.author@institute.edu}
+\newcommand{\EventName}      {Conference / Workshop Name 2026}
+
+%% Logos (png / jpg / pdf).  Each is scaled to fit inside Width x Height.
+\newcommand{\LeftLogo}       {media/hbni_logo.png}
+\newcommand{\RightLogo}      {media/Niser_logo.png}
+\newcommand{\LogoWidth}      {0.13\paperwidth}   % max width of one logo
+\newcommand{\LogoHeight}     {8cm}               % max height of one logo
+
+%% Header font sizes (pt).  Lower them if a long title does not fit.
+\newcommand{\TitleSize}      {\fontsize{84}{98}\selectfont}
+\newcommand{\SubtitleSize}   {\fontsize{46}{54}\selectfont}
+\newcommand{\AuthorSize}     {\fontsize{48}{56}\selectfont}
+\newcommand{\AffilSize}      {\fontsize{34}{40}\selectfont}
+
+%% =====================================================================
+\begin{document}
+\begin{frame}[t]
+\vspace{-1.4cm}
+
+%% ---------------------------------------------------------------------
+%%  HEADER: logo | title + authors | logo
+%%  Widths of logo + title + logo must fit; the title box is 0.66 of the line.
+%% ---------------------------------------------------------------------
+\begin{tcolorbox}[enhanced,width=\linewidth,colback=Primary,colframe=Primary,
+  arc=0pt,boxrule=0pt,left=1cm,right=1cm,top=0.7cm,bottom=0.7cm,
+  borderline south={14pt}{0pt}{Accent}]   % OPTIONAL: burgundy rule under header
+  \begin{minipage}[c]{\LogoWidth}\centering
+    \PosterLogo{\LeftLogo}{\LogoWidth}{\LogoHeight}
+  \end{minipage}\hfill
+  \begin{minipage}[c]{0.66\linewidth}\centering
+    {\color{white}\bfseries\TitleSize \PosterTitle\par}
+    \vspace{0.25cm}
+    {\color{white!80!Primary}\itshape\SubtitleSize \PosterSubtitle\par}   % OPTIONAL subtitle
+    \vspace{0.45cm}
+    {\color{white}\AuthorSize \Authors\par}
+    \vspace{0.15cm}
+    {\color{white!78!Primary}\AffilSize \Affiliations\par}
+  \end{minipage}\hfill
+  \begin{minipage}[c]{\LogoWidth}\centering
+    \PosterLogo{\RightLogo}{\LogoWidth}{\LogoHeight}
+  \end{minipage}
+\end{tcolorbox}
+
+\vspace{0.2cm}
+
+%% =====================================================================
+%%  BODY: THREE COLUMNS
+%%  Blocks:   \begin{block}{Title}...\end{block}       navy title
+%%            \begin{alertblock}{Title}...             burgundy title
+%%            \begin{exampleblock}{Title}...           slate-blue title
+%%  For TWO columns use \begin{column}{0.485\textwidth} twice.
+%% =====================================================================
+\begin{columns}[T,onlytextwidth]
+
+%% ------------------------- COLUMN 1 ---------------------------------
+\begin{column}{0.315\textwidth}
+
+\begin{block}{Introduction and Motivation}
+  Graph neural networks are deployed in \kw{sensitive domains}, where regulators
+  require both explanations and privacy. Write two or three sentences that
+  explain the big picture and why it matters.
+  \begin{itemize}
+    \item Why does this problem matter in the real world?
+    \item What is missing in existing work?
+    \item What is the key idea of this work?
+  \end{itemize}
+  \begin{tcolorbox}[keybox]
+    \centering\bfseries Research question: can an adversary recover private
+    structure from public outputs?
+  \end{tcolorbox}
+\end{block}
+
+\begin{block}{Problem Definition}
+  Given input $x \in \mathcal{X}$, we seek parameters $\theta^{\star}$ with
+  \[
+    \theta^{\star} = \arg\min_{\theta}\;
+    \mathbb{E}_{(x,y)}\big[\,\mathcal{L}(f_\theta(x),\,y)\,\big].
+  \]
+  \textbf{Assumptions:}
+  \begin{enumerate}
+    \item The adversary sees only public outputs.
+    \item Model parameters are not accessible.
+  \end{enumerate}
+\end{block}
+
+\begin{alertblock}{Limitations of Existing Work}
+  \begin{itemize}
+    \item Existing attacks assume clean data; accuracy drops by \num{30\%} under noise.
+    \item They do not scale beyond small graphs (out of memory).
+  \end{itemize}
+\end{alertblock}
+
+\begin{block}{Contributions}
+  \begin{itemize}
+    \item \kw{Contribution 1:} a new method that does something useful.
+    \item \kw{Contribution 2:} a theoretical result supporting the method.
+    \item \kw{Contribution 3:} extensive experiments on five benchmarks.
+  \end{itemize}
+\end{block}
+
+\end{column}\hfill
+
+%% ------------------------- COLUMN 2 ---------------------------------
+\begin{column}{0.315\textwidth}
+
+\begin{block}{Proposed Method}
+  \centering
+  \fig{architecture.pdf}{\linewidth}   % EDIT: your diagram
+  \par\vspace{2pt}
+  \raggedright\textbf{Figure 1.} One-sentence caption describing the pipeline.
+\end{block}
+
+\begin{exampleblock}{Key Components}
+  \begin{tcolorbox}[infobox]\textbf{(1) Component A.} What it does, in one line.\end{tcolorbox}
+  \begin{tcolorbox}[infobox]\textbf{(2) Component B.} What it does, in one line.\end{tcolorbox}
+  \begin{tcolorbox}[infobox]\textbf{(3) Component C.} What it does, in one line.\end{tcolorbox}
+  \textbf{Training objective:}
+  \begin{equation}
+    \mathcal{L}_{\text{total}} = \mathcal{L}_{A} + \lambda\,\mathcal{L}_{B}
+  \end{equation}
+\end{exampleblock}
+
+\begin{block}{Algorithm}
+  \begin{enumerate}
+    \item Collect and clean the data.
+    \item Train the model with the joint objective.
+    \item Evaluate on the benchmark datasets.
+  \end{enumerate}
+\end{block}
+
+\begin{block}{Experimental Setup}
+  \textbf{Datasets:} list them here. \textbf{Metrics:} AUC and AP.
+  \textbf{Baselines:} name the methods you compare with.
+  \textbf{Implementation:} optimiser, learning rate, hardware.
+\end{block}
+
+\end{column}\hfill
+
+%% ------------------------- COLUMN 3 ---------------------------------
+\begin{column}{0.315\textwidth}
+
+\begin{block}{Results}
+  \centering
+  \renewcommand{\arraystretch}{1.2}\setlength{\tabcolsep}{6pt}
+  % Wide table? wrap the tabular in \resizebox{\linewidth}{!}{ ... }
+  \begin{tabular}{lccc}
+    \toprule
+    \textbf{Method} & \textbf{Data 1} & \textbf{Data 2} & \textbf{Data 3} \\
+    \midrule
+    Baseline A & 0.52 & 0.54 & 0.51 \\
+    Baseline B & 0.88 & 0.93 & 0.49 \\
+    \midrule
+    \rowcolor{Accent!12}
+    \textbf{Ours} & \textbf{0.94} & \textbf{0.98} & \underline{0.60} \\
+    \bottomrule
+  \end{tabular}
+  \par\vspace{3pt}
+  \raggedright\textbf{Table 1.} Bold: best; underline: second best.
+\end{block}
+
+\begin{block}{Analysis}
+  \centering
+  \fig{results_plot.pdf}{\linewidth}   % EDIT: your plot
+  \par\vspace{2pt}
+  \raggedright\textbf{Figure 2.} Caption stating the trend the reader should notice.
+\end{block}
+
+\begin{block}{Discussion}
+  Explain \emph{why} the results look the way they do, and mention the
+  main limitation of your approach in one or two sentences.
+\end{block}
+
+\begin{block}{Conclusions}
+  \begin{enumerate}
+    \item \textbf{Main finding:} one sentence with a number, e.g.\ \num{+10\%} AUC.
+    \item \textbf{Second finding:} one sentence.
+    \item \textbf{Future work:} one sentence.
+  \end{enumerate}
+\end{block}
+
+\end{column}
+\end{columns}
+
+%% ---------------------------------------------------------------------
+%%  OPTIONAL: full-width take-home message (delete if not needed)
+%% ---------------------------------------------------------------------
+\vspace{6pt}
+\begin{tcolorbox}[keybox]
+  \centering\bfseries Take-home message: one sentence a passer-by can remember.
+\end{tcolorbox}
+
+%% OPTIONAL: \vfill pushes the footer to the page bottom when content is short.
+\vfill
+
+%% ---------------------------------------------------------------------
+%%  FOOTER: references | acknowledgements | QR code
+%% ---------------------------------------------------------------------
+\begin{tcolorbox}[enhanced,colback=white,colframe=Primary,boxrule=1.4pt,arc=0pt,
+  left=10pt,right=10pt,top=6pt,bottom=6pt]
+  \small
+  \begin{minipage}[t]{0.52\linewidth}
+    \textbf{\color{Primary}References}\par\vspace{2pt}
+    % Few refs: type by hand. Many refs: use BibTeX instead.
+    [1] A.~Author, B.~Author. \emph{Paper title.} Venue, 2024.\par
+    [2] C.~Author. \emph{Another paper title.} Venue, 2023.\par
+    [3] D.~Author et~al. \emph{Third paper title.} Venue, 2022.
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.29\linewidth}
+    \textbf{\color{Primary}Acknowledgements}\par\vspace{2pt}
+    This work was supported by \emph{Funding Agency}, Grant No.~XXXX.   % EDIT
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.11\linewidth}\centering
+    \qrcode[height=3cm]{https://smlab.niser.ac.in/}\\[-1pt]   % OPTIONAL: link to paper/code
+    {\scriptsize Paper \& code}
+  \end{minipage}
+\end{tcolorbox}
+
+%% ---------------------------------------------------------------------
+%%  BOTTOM STRIP
+%% ---------------------------------------------------------------------
+\begin{tcolorbox}[enhanced,colback=Primary,colframe=Primary,arc=0pt,boxrule=0pt,
+  left=1cm,right=1cm,top=0.3cm,bottom=0.3cm,before=\vspace{2pt},after=,
+  borderline north={8pt}{0pt}{Accent}]
+  \color{white}\normalsize
+  \textbf{Contact:} \ContactEmail \hfill \textbf{\EventName}
+\end{tcolorbox}
+
+\end{frame}
+\end{document}
